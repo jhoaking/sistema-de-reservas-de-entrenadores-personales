@@ -3,11 +3,21 @@ import { z } from "zod";
 export const registerUserSchema = z.object({
   nombre: z.string().min(3, { message: "El nombre debe tener al menos 3 caracteres" }),
   email: z.string().min(1, { message: "El campo email es obligatorio" }).email({ message: "Revisa el formato del email" }),
-  password: z.string().min(4, { message: "La contraseña debe tener entre 4 y 12 caracteres" }).max(20, { message: "La contraseña debe tener entre 4 y 20 caracteres" }),
-  rol: z.enum(["usuario", "entrenador"]).optional().default("usuario"),
+  password: z.string().min(6, { message: "La contraseña debe tener entre 6 y 20 caracteres" }).max(20, { message: "La contraseña debe tener entre 6 y 20 caracteres" }),
+  rol_id: z.enum(["1", "2"]).transform(val => Number(val)).default("1"),
   años_de_experiencia: z.string().min(1).optional(),
   especialidad: z.enum(["aparatos", "cardio"]).optional(),
 });
+
+export type registerUserType = z.infer<typeof registerUserSchema>;
+
+export const validateRegister = (input: unknown): registerUserType => {
+  const vali = registerUserSchema.safeParse(input);
+  if (!vali.success) {
+    throw new Error("error al validar los datos");
+  }
+  return vali.data;
+};
 
 
 const LoginSchema = z.object({
@@ -22,14 +32,3 @@ export const validateLogin = (input: unknown): LoginType => {
 };
 
 
-
-export type registerUserSchema = z.infer<typeof registerUserSchema>;
-
-export const validateRegister = (input: unknown): registerUserSchema => {
-  const vali = registerUserSchema.safeParse(input);
-  if (!vali.success) {
-    const errorMessages = vali.error.errors.map((e) => e.message).join(", ");
-    throw new Error(errorMessages);
-  }
-  return vali.data;
-};

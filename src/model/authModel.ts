@@ -42,14 +42,14 @@ export class authModel {
   };
 
 
-  static obtenerUserByEmail = async (email : string):Promise<AuthTypes | EntrenadorType | null> =>{
+  static obtenerUserByEmail = async (email : string):Promise<AuthTypes  | null> =>{
       try {
         const query = 'SELECT * FROM usuarios  WHERE email = ?';
         const [rows] = await connection.query<RowDataPacket[]>(query,[email]);
         if(rows.length === 0){
           return null;
         }
-        return rows[0] as AuthTypes | EntrenadorType | null;
+        return rows[0] as AuthTypes;
       } catch (error:any) {
         throw new Error("eror al obtener email  en la db");
       }

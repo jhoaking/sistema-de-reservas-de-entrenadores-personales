@@ -9,8 +9,13 @@ export const hashedPassword = async (passwordUser : string):Promise<string> =>{
 }
 
 export const comparePassword = async (password : string , hashedPassword : string):Promise<boolean> =>{
-    const compare  = await bcrypt.compare(password,hashedPassword);
+    try {
+        const compare  = await bcrypt.compare(password,hashedPassword);
     return compare;
+    } catch (error : any) {
+        console.error(error);
+        throw new Error("error al comparar contraseñas");
+    }
 }
 
 export const createToken = async (user : AuthTypes):Promise<string> =>{
