@@ -1,4 +1,4 @@
-import { ResultSetHeader } from "mysql2";
+import { ResultSetHeader, RowDataPacket } from "mysql2";
 import { connection } from "../db";
 import { AuthTypes, EntrenadorType, RegisterAuthType } from "../types/auth";
 
@@ -40,4 +40,18 @@ export class authModel {
       throw new Error("eror al registrar en la db");
     }
   };
+
+
+  static obtenerUserByEmail = async (email : string):Promise<AuthTypes | EntrenadorType | null> =>{
+      try {
+        const query = 'SELECT * FROM usuarios  WHERE email = ?';
+        const [rows] = await connection.query<RowDataPacket[]>(query,[email]);
+        if(rows.length === 0){
+          return null;
+        }
+        return rows[0] as AuthTypes | EntrenadorType | null;
+      } catch (error:any) {
+        throw new Error("eror al obtener email  en la db");
+      }
+  }
 }
