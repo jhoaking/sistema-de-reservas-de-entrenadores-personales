@@ -6,11 +6,13 @@ import {
   comparePassword,
 } from "../services/authServices";
 import { validateRegister, validateLogin } from "../schema/authSchema";
-import { AuthTypes, RegisterAuthType } from "../types/auth";
+import { AuthType, RegisterAuthType } from "../types/auth";
 
 export class authController {
   static register = async (req: Request, res: Response): Promise<void> => {
-    try {
+      try {
+        console.log(req.body);
+        
       const vali = validateRegister(req.body);
 
       const buscarEmail = await authModel.obtenerUserByEmail(vali.email);
@@ -20,10 +22,10 @@ export class authController {
       }
       const hashearContra = await hashedPassword(vali.password);
 
-      const user = await authModel.register({
-        ...vali,
+      const user = await authModel.register({ nombre: vali.nombre,
+        email: vali.email,
         password: hashearContra,
-      } as RegisterAuthType);
+        rol_id: vali.rol,} as RegisterAuthType);
       res.status(200).json({ message: "registrado con exito", user });
     } catch (error: any) {
       console.error(error);
@@ -70,7 +72,7 @@ export class authController {
   };
 
   static protectedUser = async (req:Request , res: Response):Promise<void> =>{
-    const user = req.user as AuthTypes;
+    const user = req.user as AuthType;
     if(!user){
         res.status(401).json({message : 'usuario no autorizado'});
         return;

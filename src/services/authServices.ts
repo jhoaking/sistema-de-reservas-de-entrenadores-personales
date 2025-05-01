@@ -1,7 +1,7 @@
 import { SALT_ROUNDS,SECRET_JWT_KEY } from "../config";
 import jwt ,{ JwtPayload }  from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
-import { AuthTypes } from "../types/auth";
+import { AuthType } from "../types/auth";
 
 export const hashedPassword = async (passwordUser : string):Promise<string> =>{
     const hashed = await bcrypt.hash(passwordUser, Number(SALT_ROUNDS))
@@ -18,7 +18,7 @@ export const comparePassword = async (password : string , hashedPassword : strin
     }
 }
 
-export const createToken = async (user : AuthTypes):Promise<string> =>{
+export const createToken = async (user : AuthType):Promise<string> =>{
     const token = jwt.sign(
         {user_id : user.user_id , email :user.email , nombre : user.nombre , rol : user.rol_id},
         SECRET_JWT_KEY,

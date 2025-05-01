@@ -1,6 +1,6 @@
 enum especialidad {'aparatos' , 'cardio'}
 
-export interface AuthTypes{
+export interface AuthType{
     user_id : number,
     nombre : string,
     email : string,
@@ -10,13 +10,14 @@ export interface AuthTypes{
 }
 
 export interface EntrenadorType{
-    user : AuthTypes,
+    user : AuthType,
     años_de_experiencia : string,
     descripcion : string,
-    expecialidad  :especialidad
+    especialidad  :especialidad
 }
 
-export type RegisterAuthType = Pick<AuthTypes , 'nombre'|'email'| 'password' | 'fecha_creacion'| 'rol_id'> & 
-{descripcion ?: string ;
+export type RegisterAuthType = Pick<AuthType , 'nombre'|'email'| 'password' | 'fecha_creacion'| 'rol_id'> & 
+{
+descripcion ?: string ;
 años_de_experiencia?: string;
 especialidad?: especialidad;}

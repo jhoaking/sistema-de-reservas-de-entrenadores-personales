@@ -1,22 +1,27 @@
 import { ResultSetHeader, RowDataPacket } from "mysql2";
 import { connection } from "../db";
-import { AuthTypes, EntrenadorType, RegisterAuthType } from "../types/auth";
+import { AuthType, EntrenadorType, RegisterAuthType } from "../types/auth";
 
 export class authModel {
   static register = async (
     data: RegisterAuthType
-  ): Promise<AuthTypes | EntrenadorType> => {
+  ): Promise<AuthType | EntrenadorType> => {
     try {
+      console.log("Rol ID recibido:", data.rol_id);
+
       const query =
-        "INSERT INTO usuarios(nombre,email,password,fecha_creacion, rol_id) VALUES(?,?,?,?,?)";
+        "INSERT INTO usuarios(nombre,email,password, rol_id) VALUES(?,?,?,?)";
       const values = [data.nombre, data.email, data.password, data.rol_id];
       const [rows] = await connection.query<ResultSetHeader>(query, values);
 
-      const user = { user_id: rows.insertId, ...data } as AuthTypes;
+      const user = { user_id: rows.insertId, ...data } as AuthType;
+
+      console.log("Años de experiencia:", data.años_de_experiencia);
+      console.log("Especialidad:", data.especialidad);
 
       if (data.rol_id == 2 && data.años_de_experiencia && data.especialidad) {
         const queryEntrenador = `
-                INSERT INTO entrenadores(user_id , años_de_experiencia, descripcion , especialidad)
+                INSERT INTO entrenadores(user_id ,años_de_experiencia, descripcion , especialidad)
                 VALUES (?,?,?,?)`;
         const entrenadorValues = [
           user.user_id,
@@ -24,6 +29,8 @@ export class authModel {
           data.descripcion,
           data.especialidad,
         ];
+
+        console.log("Inserción en entrenadores con los siguientes valores:", entrenadorValues);
         await connection.query<ResultSetHeader>(
           queryEntrenador,
           entrenadorValues
@@ -31,7 +38,7 @@ export class authModel {
         return {
           user,
           años_de_experiencia: data.años_de_experiencia,
-          expecialidad: data.especialidad,
+          especialidad: data.especialidad,
         } as EntrenadorType;
       }
 
@@ -42,14 +49,14 @@ export class authModel {
   };
 
 
-  static obtenerUserByEmail = async (email : string):Promise<AuthTypes  | null> =>{
+  static obtenerUserByEmail = async (email : string):Promise<AuthType  | null> =>{
       try {
         const query = 'SELECT * FROM usuarios  WHERE email = ?';
         const [rows] = await connection.query<RowDataPacket[]>(query,[email]);
         if(rows.length === 0){
           return null;
         }
-        return rows[0] as AuthTypes;
+        return rows[0] as AuthType;
       } catch (error:any) {
         throw new Error("eror al obtener email  en la db");
       }
