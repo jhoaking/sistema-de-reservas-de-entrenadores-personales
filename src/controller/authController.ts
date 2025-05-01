@@ -10,9 +10,7 @@ import { AuthType, RegisterAuthType } from "../types/auth";
 
 export class authController {
   static register = async (req: Request, res: Response): Promise<void> => {
-      try {
-        console.log(req.body);
-        
+    try {
       const vali = validateRegister(req.body);
 
       const buscarEmail = await authModel.obtenerUserByEmail(vali.email);
@@ -22,10 +20,16 @@ export class authController {
       }
       const hashearContra = await hashedPassword(vali.password);
 
-      const user = await authModel.register({ nombre: vali.nombre,
+      const user = await authModel.register({
+        nombre: vali.nombre,
         email: vali.email,
         password: hashearContra,
-        rol_id: vali.rol,} as RegisterAuthType);
+        rol_id: vali.rol,
+        años_de_experiencia: vali.años_de_experiencia,
+        especialidad: vali.especialidad,
+        descripcion: vali.descripcion,
+      } as RegisterAuthType);
+
       res.status(200).json({ message: "registrado con exito", user });
     } catch (error: any) {
       console.error(error);
@@ -61,8 +65,9 @@ export class authController {
 
       res
         .status(201)
-        .cookie("access_token", token, options)
+        .cookie('access_token', token, options)
         .json({ message: "login exitoso" });
+        
     } catch (error: any) {
       res.status(500).json({
         message: "Error logeando el usuario",
@@ -71,17 +76,20 @@ export class authController {
     }
   };
 
-  static protectedUser = async (req:Request , res: Response):Promise<void> =>{
+  static protectedUser = async (req: Request, res: Response): Promise<void> => {
     const user = req.user as AuthType;
-    if(!user){
-        res.status(401).json({message : 'usuario no autorizado'});
-        return;
-    }
-    res.status(200).json({message: ' usuario autorizado' , user})
-  }
 
-  static logout = async (_req: Request , res: Response):Promise<void> =>{
-    res.clearCookie("access_token", { httpOnly: true, sameSite: "strict" })
-     .status(200).json({ message: "Logout exitoso" });
-  }
+    if (!user) {
+      res.status(401).json({ message: "usuario no autorizado" });
+      return;
+    }
+    res.status(200).json({ message: " usuario autorizado", user });
+  };
+
+  static logout = async (_req: Request, res: Response): Promise<void> => {
+    res
+      .clearCookie("access_token", { httpOnly: true, sameSite: "strict" })
+      .status(200)
+      .json({ message: "Logout exitoso" });
+  };
 }

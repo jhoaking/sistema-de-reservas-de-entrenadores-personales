@@ -5,6 +5,7 @@ export const registerUserSchema = z.object({
   email: z.string().min(1, { message: "El campo email es obligatorio" }).email({ message: "Revisa el formato del email" }),
   password: z.string().min(6, { message: "La contraseña debe tener entre 6 y 20 caracteres" }).max(20, { message: "La contraseña debe tener entre 6 y 20 caracteres" }),
   rol: z.enum(["1", "2"]).transform(val => Number(val)).default("1"),
+  descripcion : z.string().min(1 ,{ message: "El nombre debe tener al menos 1 caracter" }).optional(),
   años_de_experiencia: z.string().optional(),
   especialidad: z.enum(["aparatos", "cardio"]).optional(),
 });

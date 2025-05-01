@@ -7,17 +7,12 @@ export class authModel {
     data: RegisterAuthType
   ): Promise<AuthType | EntrenadorType> => {
     try {
-      console.log("Rol ID recibido:", data.rol_id);
-
       const query =
         "INSERT INTO usuarios(nombre,email,password, rol_id) VALUES(?,?,?,?)";
       const values = [data.nombre, data.email, data.password, data.rol_id];
       const [rows] = await connection.query<ResultSetHeader>(query, values);
 
       const user = { user_id: rows.insertId, ...data } as AuthType;
-
-      console.log("Años de experiencia:", data.años_de_experiencia);
-      console.log("Especialidad:", data.especialidad);
 
       if (data.rol_id == 2 && data.años_de_experiencia && data.especialidad) {
         const queryEntrenador = `
@@ -37,6 +32,7 @@ export class authModel {
         );
         return {
           user,
+          descripcion : data.descripcion,
           años_de_experiencia: data.años_de_experiencia,
           especialidad: data.especialidad,
         } as EntrenadorType;
