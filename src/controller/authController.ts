@@ -65,9 +65,8 @@ export class authController {
 
       res
         .status(201)
-        .cookie('access_token', token, options)
+        .cookie("access_token", token, options)
         .json({ message: "login exitoso" });
-        
     } catch (error: any) {
       res.status(500).json({
         message: "Error logeando el usuario",

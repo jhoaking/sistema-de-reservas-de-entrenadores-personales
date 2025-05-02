@@ -21,7 +21,7 @@ export const comparePassword = async (
   }
 };
 
-export const createToken =  (user: AuthType): string => {
+export const createToken = (user: AuthType): string => {
   const token = jwt.sign(
     {
       user_id: user.user_id,
