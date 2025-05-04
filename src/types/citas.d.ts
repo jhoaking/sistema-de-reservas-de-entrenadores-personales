@@ -19,7 +19,6 @@ export type EntrenadorType = {
   especialidad: string;
 };
 
-export type CreateCita = Pick<
-  CitaTipes,
+export type CreateCita = Pick< CitaTipes,
   "entrenador_id" | "fecha_cita" | "hora_cita" | "estado"
 >;

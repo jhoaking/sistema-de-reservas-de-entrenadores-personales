@@ -16,13 +16,15 @@ export class citaModel {
     }
   };
 
-  static obtenerPorCategoria = async (especialidad: string): Promise<EntrenadorType[]> => {
+  static obtenerPorCategoria = async (
+    especialidad: string
+  ): Promise<EntrenadorType[]> => {
     try {
       const query = `SELECT u.nombre , e.años_de_experiencia , e.descripcion , e.especialidad FROM entrenadores e
                         INNER JOIN usuarios u ON e.user_id = u.user_id 
                         WHERE e.especialidad = ?;`;
 
-      const [rows] = await  connection.query(query,[especialidad]);
+      const [rows] = await connection.query(query, [especialidad]);
       return rows as EntrenadorType[];
     } catch (error: any) {
       console.error(error.message);
@@ -31,8 +33,6 @@ export class citaModel {
       );
     }
   };
-
-  
 
   static crearCitaPorProcedure = async (
     user_id: number,
@@ -43,9 +43,10 @@ export class citaModel {
       const values = [
         user_id,
         data.entrenador_id,
-        data.hora_cita,
+        data.hora_cita,  
         data.fecha_cita,
       ];
+      console.log('Valores enviados al procedure:', values);
       await connection.query(query, values);
 
       const [[{ mensaje }]] = await connection.query<RowDataPacket[]>(
@@ -56,5 +57,5 @@ export class citaModel {
       console.error(error.message);
       throw new Error("error al crear la cita en la db");
     }
-  };
+  };    
 }
