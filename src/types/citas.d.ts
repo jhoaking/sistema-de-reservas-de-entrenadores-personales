@@ -1,4 +1,4 @@
-enum Estado {
+ enum Estado {
   PENDIENTE = "pendiente",
   ACEPTADA = "aceptada",
   CANCELADA = "cancelada",

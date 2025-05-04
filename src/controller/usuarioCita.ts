@@ -4,6 +4,17 @@ import { validateCita } from "../schema/usuarioCita";
 import { CitaTipes } from "../types/citas";
 
 export class citaUserController {
+
+  static obtenerTodaCitaUser = async (req:Request , res : Response):Promise<void> =>{
+    const user = req.user.user_id;
+    try {
+      const result = await citaModel.obtenerCitasUsuario(user);
+      res.status(200).json(result);
+    } catch (error : any) {
+      res.status(500).json({ message : 'error al obtener todas la citas el user'})
+    }
+  }
+
   static obtenerEntrenadores = async (
     _req: Request,
     res: Response
