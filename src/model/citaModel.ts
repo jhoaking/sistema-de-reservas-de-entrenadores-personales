@@ -53,7 +53,7 @@ export class citaModel {
   static crearCitaPorProcedure = async (
     user_id: number,
     data: CreateCita
-  ): Promise<CitaTipes> => {
+  ): Promise<string> => {
     try {
       const query = "CALL sp_control_cita(?,?,?,?,@mensaje)";
       const values = [

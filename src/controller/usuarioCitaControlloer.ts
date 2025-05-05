@@ -63,4 +63,16 @@ export class citaUserController {
       res.status(500).json({ message: "error al crear la cita" });
     }
   };
+
+  static actualizarEstadoCita = async (req:Request , res : Response):Promise<void> =>{
+    const user = req.user.user_id;
+    const cita_id = +req.params.id;
+    try {
+        const result = await citaModel.actualizarEstadoCita(cita_id,user);
+        res.status(200).json(result);
+    } catch (error:any) {
+      console.error(error);
+      res.status(500).json({ message: "error al actualizar la cita" });
+    }
+  }
 }
