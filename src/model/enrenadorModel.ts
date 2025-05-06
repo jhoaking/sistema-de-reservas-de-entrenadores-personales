@@ -1,7 +1,7 @@
-import { ResultSetHeader, RowDataPacket } from "mysql2";
+import {  RowDataPacket } from "mysql2";
 import { connection } from "../db";
 import { EntrenadorType, Estado } from "../types/citas";
-import { log } from "console";
+
 
 export class entrenadorModel {
   static obtenerTodasCitasEntrenador = async (
