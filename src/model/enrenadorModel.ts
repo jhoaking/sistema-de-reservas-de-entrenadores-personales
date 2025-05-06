@@ -22,33 +22,43 @@ export class entrenadorModel {
   static actualizarEstadoCita = async (
     entrenador_id: number,
     estado: Estado,
-    user_id: number
+    cita_id: number
   ): Promise<{ mensaje: string } | null> => {
     try {
-      const query = `UPDATE citas SET estado = ?  WHERE entrenador_id = ? AND user_id = ? AND estado = 'pendiente';`;
-      const values = [estado,entrenador_id,user_id];
-      const [rows] = await connection.query<ResultSetHeader>(query,values);
-
-      if(rows.affectedRows === 0){
-        return { mensaje: "No se encontró una cita pendiente con esos datos" };
+      console.log('cita_id' , cita_id);
+      console.log('entrenador_id' , entrenador_id);
+      console.log('estado' , estado);
+      
+      
+      const [rows] = await connection.query<RowDataPacket[]>(
+        'SELECT * FROM citas WHERE cita_id = ? AND entrenador_id = ? AND estado = "pendiente"',
+        [cita_id, entrenador_id]
+      );
+      console.log('Cita encontrada:', rows);
+      if (rows.length === 0) {
+        return { mensaje: "No se encontró una cita pendiente" };
       }
 
-      return { mensaje: `Cita ${estado} correctamente` };
+      
+      await connection.query("UPDATE citas SET estado = ? WHERE cita_id = ?", [
+        estado,
+        cita_id,
+      ]);
+
+      return { mensaje: "Cita actualizada" };
     } catch (error: any) {
       throw new Error("error al actualizar las citas de los usuarios");
     }
   };
 
-  static buscarEntrenadorById = async (user_id : number) =>{
-    console.log('entrenador token' , user_id);
-    
-    
-    
-    const query = 'SELECT * FROM entrenadores WHERE entrenador_id = ?';
-    const [rows] = await connection.query<RowDataPacket[]>(query,[user_id]);
-    if(rows.length === 0){
+  static buscarEntrenadorById = async (user_id: number) => {
+    console.log("entrenador token", user_id);
+
+    const query = "SELECT * FROM entrenadores WHERE user_id = ?";
+    const [rows] = await connection.query<RowDataPacket[]>(query, [user_id]);
+    if (rows.length === 0) {
       return null;
     }
     return rows[0];
-  }
+  };
 }

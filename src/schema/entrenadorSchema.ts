@@ -19,7 +19,7 @@ export const valiEntrenador = (input: unknown): EntrenadorTypes => {
      
 
 const citaEstadoSchema = z.object({
-  user_id : z.number().positive().int(),
+  cita_id : z.number().positive().int(),
   estado: z.enum(['aceptada', 'cancelada'])
 });
 

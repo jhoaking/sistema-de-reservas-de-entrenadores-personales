@@ -24,9 +24,7 @@ export class entrenadorController {
     console.log("params:", entrenadorId);
     console.log("autenticado:", entrenadorAutenticado);
 
-    const entrenador = await entrenadorModel.buscarEntrenadorById(
-      entrenadorAutenticado
-    );
+    const entrenador = await entrenadorModel.buscarEntrenadorById( entrenadorAutenticado);
     if (!entrenador || entrenador.entrenador_id !== entrenadorId) {
       res
         .status(403)
@@ -36,9 +34,9 @@ export class entrenadorController {
     try {
       const vali = valiCita(req.body);
       const result = await entrenadorModel.actualizarEstadoCita(
-        entrenadorAutenticado,
+        entrenador.entrenador_id ,
         vali.estado as Estado,
-        vali.user_id
+        vali.cita_id
       );
       res
         .status(200)
