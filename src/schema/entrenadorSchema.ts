@@ -17,3 +17,18 @@ export const valiEntrenador = (input: unknown): EntrenadorTypes => {
   return vali.data;
 };
      
+
+const citaEstadoSchema = z.object({
+  user_id : z.number().positive().int(),
+  estado: z.enum(['aceptada', 'cancelada'])
+});
+
+type CitaType = z.infer<typeof citaEstadoSchema>;
+
+export const valiCita = (input: unknown): CitaType => {
+  const vali = citaEstadoSchema.safeParse(input);
+  if (!vali.success) {
+    throw new Error("error al validar los datos");
+  }
+  return vali.data;
+};

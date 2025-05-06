@@ -1,13 +1,14 @@
-import { ResultSetHeader } from "mysql2";
+import { ResultSetHeader, RowDataPacket } from "mysql2";
 import { connection } from "../db";
 import { EntrenadorType, Estado } from "../types/citas";
+import { log } from "console";
 
 export class entrenadorModel {
   static obtenerTodasCitasEntrenador = async (
     entrenador_id: number
   ): Promise<EntrenadorType[]> => {
     try {
-      const query = `SELECT u.nombre , c.fecha_cita , c.hora_cita  FROM citas c
+      const query = `SELECT u.nombre , c.fecha_cita , c.hora_cita , c.estado  FROM citas c
                             INNER JOIN usuarios u ON c.user_id = u.user_id
                             WHERE c.entrenador_id = ?;`;
 
@@ -37,4 +38,17 @@ export class entrenadorModel {
       throw new Error("error al actualizar las citas de los usuarios");
     }
   };
+
+  static buscarEntrenadorById = async (user_id : number) =>{
+    console.log('entrenador token' , user_id);
+    
+    
+    
+    const query = 'SELECT * FROM entrenadores WHERE entrenador_id = ?';
+    const [rows] = await connection.query<RowDataPacket[]>(query,[user_id]);
+    if(rows.length === 0){
+      return null;
+    }
+    return rows[0];
+  }
 }
