@@ -5,9 +5,9 @@ export class historialModel {
   static obtenerTodoHistorial = async (
     entrenador_id: number
   ): Promise<HistorialType[]> => {
-    const query = `SELECT * SELECT u.nombre , u.email,u.fecha_creacion,h.accion , h.fecha_accion FROM historial_citas h
+    const query = ` SELECT u.nombre , u.email,u.fecha_creacion,h.accion , h.fecha_accion FROM historial_citas h
                         INNER JOIN usuarios u ON h.user_id = u.user_id
-                        WHERE h.entrenador_id = ?;FROM historial_citas WHERE entrenador_id = ?`;
+                        WHERE h.entrenador_id = ?`;
     const [rows] = await connection.query(query, [entrenador_id]);
     return rows as HistorialType[];
   };
