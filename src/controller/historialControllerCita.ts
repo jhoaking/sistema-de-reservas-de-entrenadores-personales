@@ -1,6 +1,7 @@
 import { Request,Response } from "express";
 import { historialModel } from "../model/historialEntrenador";
 import { entrenadorModel } from "../model/enrenadorModel";
+import { Accion } from "../types/historial";
 
 export class historialController {
     static obtenerTodoHistorial = async (req :Request ,res : Response):Promise<void>=>{
@@ -9,7 +10,7 @@ export class historialController {
 
             const entrenador = await entrenadorModel.buscarEntrenadorById(entrenadorAutenticado);
             if(!entrenador){
-                res.status(404).json({message : 'no e encontro el entrenador'});
+                res.status(404).json({message : 'no se encontro el entrenador'});
                 return;
             }
 
@@ -18,6 +19,23 @@ export class historialController {
         } catch (error:any) {
             console.error(error.message);
             res.status(500).json({message: 'error al obtener el historial'})
+        }
+    }
+
+    static obtenerHistorialPorEstado = async (req : Request , res: Response):Promise<void> =>{
+        const entrenadorAutenticado = req.user.user_id;
+        const {accion} = req.query;
+        try {
+            const entrenador = await entrenadorModel.buscarEntrenadorById(entrenadorAutenticado);
+            if(!entrenador){
+                res.status(404).json({message : 'no se encontro el entrenador'});
+                return;
+            }
+            const result = await historialModel.obtenerHistorialPorEstado(entrenador.entrenador_id,accion as Accion);
+            res.status(200).json(result);
+        } catch (error : any) {
+            console.error(error.message);
+            res.status(500).json({message: 'error al obtener el historial por estado'})
         }
     }
 }

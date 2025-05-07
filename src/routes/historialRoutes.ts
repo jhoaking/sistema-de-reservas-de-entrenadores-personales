@@ -4,4 +4,6 @@ import { validateAuth } from "../middleware/authMiddleware";
 
 export const routerHistorial = Router();
 
-routerHistorial.get('/protected', validateAuth , historialController.obtenerTodoHistorial);
+routerHistorial.get('/protected', validateAuth , historialController.obtenerTodoHistorial); 
+routerHistorial.get('/estado', validateAuth , historialController.obtenerHistorialPorEstado); 
+

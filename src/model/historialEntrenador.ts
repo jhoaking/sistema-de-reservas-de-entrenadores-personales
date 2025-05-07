@@ -16,23 +16,12 @@ export class historialModel {
     entrenador_id: number,
     accion: Accion
   ): Promise<HistorialType[]> => {
-    const query = `SELECT u.nombre , u.email,u.fecha_creacion,h.accion , h.fecha_accion FROM historial_citas h
-                        INNER JOIN usuarios u ON h.user_id = u.user_id
-                        WHERE h.entrenador_id = ? AND h.accion = ?;`;
+    const query = `SELECT u.nombre , u.email,u.fecha_creacion,h.accion , c.estado, h.fecha_accion FROM historial_citas h
+                    INNER JOIN usuarios u ON h.user_id = u.user_id
+                    INNER JOIN citas c ON h.cita_id = c.cita_id
+                    WHERE h.entrenador_id = ? AND h.accion = ?`;
     const values = [entrenador_id, accion];
     const [rows] = await connection.query(query, values);
     return rows as HistorialType[];
-  };
-
-  static obtenerHistorialPorFecha = async (
-    entrenador_id: number,
-    fecha_accion: Date
-  ): Promise<HistorialType[]> => {
-    const query = `SELECT u.nombre , u.email,u.fecha_creacion,h.accion , h.fecha_accion FROM historial_citas h
-                    INNER JOIN usuarios u ON h.user_id = u.user_id
-                    WHERE h.entrenador_id = ? AND h.fecha_accion = ?;`;
-    const vallues = [entrenador_id,fecha_accion];
-    const [rows] = await connection.query(query,vallues);
-    return rows as HistorialType[]
   };
 }
