@@ -1,78 +1,63 @@
 import { citaModel } from "../model/citaModel";
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { validateCita } from "../schema/usuarioCita";
 import { CitaTipes } from "../types/citas";
+import { catchAsync } from "../middleware/catchAsync";
 
 export class citaUserController {
-
-  static obtenerTodaCitaUser = async (req:Request , res : Response):Promise<void> =>{
-    const user = req.user.user_id;
-    try {
+  static obtenerTodaCitaUser = catchAsync(
+    async (req: Request, res: Response, _next: NextFunction): Promise<void> => {
+      const user = req.user.user_id;
       const result = await citaModel.obtenerCitasUsuario(user);
       res.status(200).json(result);
-    } catch (error : any) {
-      res.status(500).json({ message : 'error al obtener todas la citas el user'})
     }
-  }
+  );
 
-  static obtenerEntrenadores = async (
-    _req: Request,
-    res: Response
-  ): Promise<void> => {
-    const result = await citaModel.obtenerGeneral();
-    res.status(200).json(result);
-  };
-
-  static obtenerPorCategoria = async (
-    req: Request,
-    res: Response
-  ): Promise<void> => {
-    const { especialidad } = req.query;
-    if (typeof especialidad !== "string") {
-      res.status(400).json({ message: "La especialidad  debe ser un string" });
-      return;
+  static obtenerEntrenadores = catchAsync(
+    async (
+      _req: Request,
+      res: Response,
+      _next: NextFunction
+    ): Promise<void> => {
+      const result = await citaModel.obtenerGeneral();
+      res.status(200).json(result);
     }
-    try {
+  );
+
+  static obtenerPorCategoria = catchAsync(
+    async (req: Request, res: Response, _next: NextFunction): Promise<void> => {
+      const { especialidad } = req.query;
+      if (typeof especialidad !== "string") {
+        res
+          .status(400)
+          .json({ message: "La especialidad  debe ser un string" });
+        return;
+      }
       const result = await citaModel.obtenerPorCategoria(especialidad);
       res.status(200).json(result);
-    } catch (error: any) {
-        console.error(error);
-      res.status(500).json({ message: " error al obtener por query" });
     }
-  };
+  );
 
-  static crearCita = async (req: Request, res: Response): Promise<void> => {
-    const user = req.user;
-    console.log('user', user);
-    
-    try {
+  static crearCita = catchAsync(
+    async (req: Request, res: Response, _next: NextFunction): Promise<void> => {
+      const user = req.user;
       const vali = validateCita(req.body);
-  
-      const createCita = await citaModel.crearCitaPorProcedure(
-        user.user_id, {
+
+      const createCita = await citaModel.crearCitaPorProcedure(user.user_id, {
         entrenador_id: vali.entrenador_id,
         hora_cita: vali.hora_cita,
         fecha_cita: vali.fecha_cita,
       } as CitaTipes);
-
-      
-         
       res.status(201).json(createCita);
-    } catch (error: any) {
-        console.error(error);
-      res.status(500).json({ message: "error al crear la cita" });
     }
-  };
+  );
 
-  static actualizarEstadoCita = async (req:Request , res : Response):Promise<void> =>{
-    const user = req.user.user_id;
-    const cita_id = +req.params.id;
-    try {
-        const result = await citaModel.actualizarEstadoCita(cita_id,user);
-        res.status(200).json(result);
-    } catch (error:any) {
-      console.error(error);
-      res.status(500).json({ message: "error al actualizar la cita" });
+  static actualizarEstadoCita = catchAsync(
+    async (req: Request, res: Response, _next: NextFunction): Promise<void> => {
+      const user = req.user.user_id;
+      const cita_id = +req.params.id;
+      const result = await citaModel.actualizarEstadoCita(cita_id, user);
+      res.status(200).json(result);
     }
-  }
+  );
 }

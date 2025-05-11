@@ -16,7 +16,7 @@ export class entrenadorController {
   );
 
   static actualizarCitaEntrenador = catchAsync(
-    async (req: Request, res: Response): Promise<void> => {
+    async (req: Request, res: Response , _next : NextFunction): Promise<void> => {
       const entrenadorId = +req.params.id;
       const entrenadorAutenticado = req.user.user_id;
       const entrenador = await entrenadorModel.buscarEntrenadorById(
@@ -28,7 +28,6 @@ export class entrenadorController {
           .json({ message: "No puedes modificar citas de otro entrenador" });
         return;
       }
-      try {
         const vali = valiCita(req.body);
         const result = await entrenadorModel.actualizarEstadoCita(
           entrenador.entrenador_id,
@@ -38,12 +37,6 @@ export class entrenadorController {
         res
           .status(200)
           .json({ message: "se actualizo la cita con exito", result });
-      } catch (error: any) {
-        console.error(error.message);
-        res
-          .status(500)
-          .json({ message: "error al actualizar el estado de la cita" });
-      }
     }
   );
 }
