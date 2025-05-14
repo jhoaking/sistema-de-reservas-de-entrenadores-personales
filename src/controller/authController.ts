@@ -11,7 +11,9 @@ export class authController {
       const vali = validateRegister(req.body);
 
       const hashearContra = await hashedPassword(vali.password);
-
+         
+      console.log("datos " , vali , " password " ,hashearContra);
+      
       const user = await authService.register({
         nombre: vali.nombre,
         email: vali.email,
@@ -21,7 +23,6 @@ export class authController {
         años_de_experiencia: vali.años_de_experiencia,
         especialidad: vali.especialidad,
       } as RegisterAuthType);
-
       res.status(200).json({ message: "registrado con exito", user });
     }
   );

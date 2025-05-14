@@ -9,13 +9,18 @@ export class authModel {
     data: RegisterAuthType
   ): Promise<AuthType | EntrenadorType> => {
     try {
+      
       const { rol } = data;
       const rol_id = await RolModel.getRol(rol);
-
+      
       const query =
         "INSERT INTO usuarios(nombre,email,password, rol_id) VALUES(?,?,?,?)";
-      const values = [data.nombre, data.email, data.password, rol_id];
-      const [rows] = await connection.query<ResultSetHeader>(query, values);
+        const values = [data.nombre, data.email, data.password, rol_id];
+
+      console.log("adsd",values);
+
+
+        const [rows] = await connection.query<ResultSetHeader>(query, values);
 
       const user = { user_id: rows.insertId, ...data } as AuthType;
 
@@ -48,7 +53,8 @@ export class authModel {
 
       return user;
     } catch (error: any) {
-      throw new Error("eror al registrar en la db");
+      console.error("Error detallado al registrar:", error.message);
+      throw new Error("error al registrar en la db");
     }
   };
 

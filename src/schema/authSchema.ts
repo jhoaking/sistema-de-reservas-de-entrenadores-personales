@@ -13,7 +13,7 @@ const registerUserSchema = z.object({
     .min(6, { message: "La contraseña debe tener entre 6 y 20 caracteres" })
     .max(20, { message: "La contraseña debe tener entre 6 y 20 caracteres" }),
   rol: z
-    .enum(["usuario", "entrenador"]),
+    .enum(["usuario", "entrenador"]).optional(),
   descripcion: z
     .string()
     .min(1, { message: "El nombre debe tener al menos 1 caracter" })
@@ -22,7 +22,7 @@ const registerUserSchema = z.object({
   especialidad: z.enum(["aparatos", "cardio"]).optional(),
 });
 
-type registerUserType = z.infer<typeof registerUserSchema>;
+export type registerUserType = z.infer<typeof registerUserSchema>;
 
 export const validateRegister = (input: unknown): registerUserType => {
   const vali = registerUserSchema.safeParse(input);

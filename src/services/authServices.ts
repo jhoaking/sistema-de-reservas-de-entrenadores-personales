@@ -35,6 +35,9 @@ export class authService {
   };
 
   static register = async (validateData: RegisterAuthType) => {
+
+    console.log("data" , validateData);
+    
     const email = await authModel.obtenerUserByEmail(validateData.email);
     if (email) {
       throw new BadRequestError(

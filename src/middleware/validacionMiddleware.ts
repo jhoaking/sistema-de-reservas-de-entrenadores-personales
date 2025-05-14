@@ -1,9 +1,9 @@
-import { UserType } from "../types/rolType";
+import { AuthType } from "../types/auth";
 import { NextFunction, Request, Response } from "express";
 
 export const permisionRoles = (...rolesPermitidos: string[]) => {
   return (
-    req: Request & { user?: UserType },
+    req: Request & { user?: AuthType },
     res: Response,
     next: NextFunction
   ) => {
