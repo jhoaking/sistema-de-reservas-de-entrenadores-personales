@@ -1,7 +1,7 @@
 import z from "zod";
 
 const citaSchema = z.object({
-  entrenador_id: z.number().positive().int(),
+  entrenador: z.string().min(1 ,{message : "el nombre del entrenador debe tener 1 caracter al menos"}),
   fecha_cita: z.string(),
   hora_cita: z.string(),
 });

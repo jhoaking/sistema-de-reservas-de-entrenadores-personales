@@ -1,6 +1,7 @@
 import { ResultSetHeader, RowDataPacket } from "mysql2";
 import { connection } from "../db";
 import { CitaTipes, CreateCita, EntrenadorType } from "../types/citas";
+import { entrenadorRolModel } from "./controlIDS/controlEntrenador_id";
 
 export class citaModel {
   static obtenerCitasUsuario = async (
@@ -55,10 +56,13 @@ export class citaModel {
     data: CreateCita
   ): Promise<string> => {
     try {
+      const {entrenador} = data;
+      const entrenador_id = await entrenadorRolModel.getRol(entrenador)
+
       const query = "CALL sp_control_cita(?,?,?,?,@mensaje)";
       const values = [
         user_id,
-        data.entrenador_id,
+        entrenador_id,
         data.hora_cita,
         data.fecha_cita,
       ];

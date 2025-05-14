@@ -1,8 +1,7 @@
 import { ResultSetHeader, RowDataPacket } from "mysql2";
 import { connection } from "../db";
 import { AuthType, EntrenadorType, RegisterAuthType } from "../types/auth";
-import { RolModel } from "./controlRol-";
-
+import { RolModel } from "./controlIDS/controlRol-";
 
 export class authModel {
   static register = async (

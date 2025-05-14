@@ -7,7 +7,7 @@
 
 export interface CitaTipes {
   user_id: number;
-  entrenador_id: number;
+  entrenador: string;
   fecha_cita: string;
   hora_cita: string;
   estado: Estado;
@@ -20,5 +20,5 @@ export type EntrenadorType = {
 };
 
 export type CreateCita = Pick< CitaTipes,
-  "entrenador_id" | "fecha_cita" | "hora_cita" | "estado"
+  "entrenador" | "fecha_cita" | "hora_cita" | "estado"
 >;

@@ -1,5 +1,6 @@
-import {connection} from '../db';
+
 import { RowDataPacket } from "mysql2";
+import { connection } from "../../db";
 
 export class RolModel {
   static async getRol(rolName: string): Promise<number> {
