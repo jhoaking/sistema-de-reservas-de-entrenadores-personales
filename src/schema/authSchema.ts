@@ -13,9 +13,7 @@ const registerUserSchema = z.object({
     .min(6, { message: "La contraseña debe tener entre 6 y 20 caracteres" })
     .max(20, { message: "La contraseña debe tener entre 6 y 20 caracteres" }),
   rol: z
-    .enum(["1", "2"])
-    .transform((val) => Number(val))
-    .default("1"),
+    .enum(["usuario", "entrenador"]),
   descripcion: z
     .string()
     .min(1, { message: "El nombre debe tener al menos 1 caracter" })

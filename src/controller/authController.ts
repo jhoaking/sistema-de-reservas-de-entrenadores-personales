@@ -1,70 +1,47 @@
-import { Request, Response, CookieOptions } from "express";
-import { authModel } from "../model/authModel";
-import {
-  createToken,
-  hashedPassword,
-  comparePassword,
-} from "../services/authServices";
+import { Request, Response, NextFunction, CookieOptions } from "express";
+import { authService } from "../services/authServices";
 import { validateRegister, validateLogin } from "../schema/authSchema";
-import { AuthType, RegisterAuthType } from "../types/auth";
 import { catchAsync } from "../middleware/catchAsync";
+import { AuthType, RegisterAuthType } from "../types/auth";
+import { hashedPassword } from "../utils/authUtil";
 
 export class authController {
   static register = catchAsync(
-    async (req: Request, res: Response): Promise<void> => {
-        const vali = validateRegister(req.body);
+    async (req: Request, res: Response, _next: NextFunction): Promise<void> => {
+      const vali = validateRegister(req.body);
 
-        const buscarEmail = await authModel.obtenerUserByEmail(vali.email);
-        if (buscarEmail) {
-          res.status(400).json({ message: "ya estas registrado" });
-          return;
-        }
-        const hashearContra = await hashedPassword(vali.password);
+      const hashearContra = await hashedPassword(vali.password);
 
-        const user = await authModel.register({
-          nombre: vali.nombre,
-          email: vali.email,
-          password: hashearContra,
-          rol_id: vali.rol,
-          años_de_experiencia: vali.años_de_experiencia,
-          especialidad: vali.especialidad,
-          descripcion: vali.descripcion,
-        } as RegisterAuthType);
+      const user = await authService.register({
+        nombre: vali.nombre,
+        email: vali.email,
+        password: hashearContra,
+        rol: vali.rol,
+        descripcion: vali.descripcion,
+        años_de_experiencia: vali.años_de_experiencia,
+        especialidad: vali.especialidad,
+      } as RegisterAuthType);
 
-        res.status(200).json({ message: "registrado con exito", user });
+      res.status(200).json({ message: "registrado con exito", user });
     }
   );
 
   static login = catchAsync(
     async (req: Request, res: Response): Promise<void> => {
-        const vali = validateLogin(req.body);
-        const user = await authModel.obtenerUserByEmail(vali.email);
-        if (!user) {
-          res.status(400).json({ message: "el email no esta registrado" });
-          return;
-        }
+      const vali = validateLogin(req.body);
 
-        const validarPassword = await comparePassword(
-          vali.password,
-          user.password
-        );
-        if (!validarPassword) {
-          res.status(400).json({ message: "contraseña invalida" });
-          return;
-        }
+      const token = await authService.loginUser(vali.email, vali.password);
+      const options: CookieOptions = {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "strict",
+        maxAge: 1000 * 60 * 60 * 48,
+      };
 
-        const token = createToken(user);
-        const options: CookieOptions = {
-          httpOnly: true,
-          secure: process.env.NODE_ENV === "production",
-          sameSite: "strict",
-          maxAge: 1000 * 60 * 60 * 48,
-        };
-
-        res
-          .status(201)
-          .cookie("access_token", token, options)
-          .json({ message: "login exitoso" });
+      res
+        .status(201)
+        .cookie("access_token", token, options)
+        .json({ message: "login exitoso" });
     }
   );
 

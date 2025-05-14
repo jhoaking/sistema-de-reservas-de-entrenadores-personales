@@ -3,6 +3,7 @@ import { connection } from "../db";
 import { AuthType, EntrenadorType, RegisterAuthType } from "../types/auth";
 import { RolModel } from "./controlRol-";
 
+
 export class authModel {
   static register = async (
     data: RegisterAuthType
