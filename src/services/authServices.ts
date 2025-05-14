@@ -1,45 +1,48 @@
-import { SALT_ROUNDS, SECRET_JWT_KEY } from "../config";
-import jwt, { JwtPayload } from "jsonwebtoken";
-import bcrypt from "bcrypt";
-import { AuthType } from "../types/auth";
+import {
+  BadRequestError,
+  UnauthorizedError,
+  NotFoundError,
+} from "../Error/errorRequests";
+import { authModel } from "../model/authModel";
+import { comparePassword, createToken } from "../utils/authUtil";
+import { JwtPayload } from "jsonwebtoken";
+import { RegisterAuthType } from "../types/auth";
 
-export const hashedPassword = async (passwordUser: string): Promise<string> => {
-  const hashed = await bcrypt.hash(passwordUser, Number(SALT_ROUNDS));
-  return hashed;
-};
+export class authService {
+  static loginUser = async (
+    email: string,
+    password: string
+  ): Promise<string> => {
+    const user = await authModel.obtenerUserByEmail(email);
+    if (!user) {
+      throw new NotFoundError("Email no encontrado");
+    }
 
-export const comparePassword = async (
-  password: string,
-  hashedPassword: string
-): Promise<boolean> => {
-  try {
-    const compare = await bcrypt.compare(password, hashedPassword);
-    return compare;
-  } catch (error: any) {
-    console.error(error);
-    throw new Error("error al comparar contraseñas");
-  }
-};
+    const validPassword = await comparePassword(password, user.password);
+    if (!validPassword) {
+      throw new UnauthorizedError("Contraseña incorrecta");
+    }
 
-export const createToken = (user: AuthType): string => {
-  const token = jwt.sign(
-    {
+    const payload: JwtPayload = {
       user_id: user.user_id,
       email: user.email,
       nombre: user.nombre,
-      rol: user.rol_id,
-    },
-    SECRET_JWT_KEY,
-    { expiresIn: "48h" }
-  );
-  return token;
-};
+      rol: user.rol,
+    };
 
-export const verifyToken = (token: string): string | JwtPayload => {
-  try {
-    const verify = jwt.verify(token, SECRET_JWT_KEY);
-    return verify;
-  } catch (error: any) {
-    throw new Error("erorr al hashear la password");
-  }
-};
+    const token = createToken(payload);
+    return token;
+  };
+
+  static register = async (validateData: RegisterAuthType) => {
+    const email = await authModel.obtenerUserByEmail(validateData.email);
+    if (email) {
+      throw new BadRequestError(
+        "Este email ya fue registrado, intente con otro"
+      );
+    }
+
+    const newUser = authModel.register(validateData);
+    return newUser;
+  };
+}
