@@ -8,7 +8,7 @@ export class citaModel {
     user_id: number
   ): Promise<CitaTipes[]> => {
     try {
-      const query = `SELECT   c.hora_cita , c.fecha_cita , e.descripcion , e.especialidad , c.estado FROM citas c
+      const query = `SELECT   e.nombre,c.hora_cita , c.fecha_cita , e.descripcion , e.especialidad , c.estado FROM citas c
                       INNER JOIN entrenadores e ON c.entrenador_id = e.entrenador_id
                       INNER JOIN usuarios u ON  c.user_id = u.user_id
                       WHERE u.user_id = ?;`;
@@ -57,13 +57,13 @@ export class citaModel {
   ): Promise<string> => {
     try {
       const {entrenador} = data;
-      const entrenador_id = await entrenadorRolModel.getRol(entrenador)
+      const entrenador_id = await entrenadorRolModel.getRol(entrenador);
 
       const query = "CALL sp_control_cita(?,?,?,?,@mensaje)";
       const values = [
         user_id,
         entrenador_id,
-        data.hora_cita,
+        data.hora_cita,   
         data.fecha_cita,
       ];
       console.log("Valores enviados al procedure:", values);

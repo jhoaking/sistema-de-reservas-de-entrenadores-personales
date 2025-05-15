@@ -13,12 +13,12 @@ export interface AuthType {
   email: string;
   password: string;
   fecha_creacion: string;
-  rol: Roles;
+  rol: Roles;     
 }
 
 export interface EntrenadorType {
   user: AuthType;
-  años_de_experiencia: string;
+  años_de_experiencia: string; 
   descripcion: string;
   especialidad: especialidad;
 }

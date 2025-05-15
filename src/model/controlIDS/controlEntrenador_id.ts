@@ -6,7 +6,7 @@ export class entrenadorRolModel {
   static async getRol(entrenadorName: string): Promise<number> {
     try {
       
-      const query = `SELECT entrenador_id FROM roles WHERE nombre = ?`;
+      const query = `SELECT entrenador_id FROM entrenadores WHERE nombre = ?`;
       const [rows] = await connection.query<RowDataPacket[]>(query, [entrenadorName]);
 
       if (rows.length === 0) {

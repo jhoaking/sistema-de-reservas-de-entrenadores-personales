@@ -25,13 +25,14 @@ export class authModel {
 
       if (rol_id == 2 && data.años_de_experiencia && data.especialidad) {
         const queryEntrenador = `
-                INSERT INTO entrenadores(user_id ,años_de_experiencia, descripcion , especialidad)
-                VALUES (?,?,?,?)`;
+                INSERT INTO entrenadores(user_id ,años_de_experiencia, descripcion , especialidad, nombre)
+                VALUES (?,?,?,?,?)`;
         const entrenadorValues = [
           user.user_id,
           data.años_de_experiencia,
           data.descripcion,
           data.especialidad,
+          data.nombre
         ];
 
         console.log(

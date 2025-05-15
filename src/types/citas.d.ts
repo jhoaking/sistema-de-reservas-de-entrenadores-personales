@@ -13,6 +13,7 @@ export interface CitaTipes {
   estado: Estado;
 }
 export type EntrenadorType = {
+  entrenador_id : number;
   nombre: string;
   años_de_experiencia: number;
   descripcion: string;

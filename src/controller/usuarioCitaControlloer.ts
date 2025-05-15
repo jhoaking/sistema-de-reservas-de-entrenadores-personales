@@ -40,11 +40,11 @@ export class citaUserController {
 
   static crearCita = catchAsync(
     async (req: Request, res: Response, _next: NextFunction): Promise<void> => {
-      const user = req.user;
+      const user = req.user.user_id;
       const vali = validateCita(req.body);
 
-      const createCita = await citaModel.crearCitaPorProcedure(user.user_id, {
-        entrenador_id: vali.entrenador_id,
+      const createCita = await citaModel.crearCitaPorProcedure(user, {
+        entrenador: vali.entrenador,
         hora_cita: vali.hora_cita,
         fecha_cita: vali.fecha_cita,
       } as CitaTipes);
